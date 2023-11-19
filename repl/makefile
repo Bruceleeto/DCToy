@@ -34,6 +34,6 @@ $(ODIR)/%.o: %.c
 .PHONY: clean
 
 clean:
-	$(RM) $(ODIR)
-	$(RM) ../$(TOY_OUTDIR)/lib$(OUTNAME).a
-	$(RM) $(OUT)
+	rm -rf $(ODIR)
+	rm -f ../$(TOY_OUTDIR)/lib$(OUTNAME).a
+	rm -f $(OUT)
