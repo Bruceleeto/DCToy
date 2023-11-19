@@ -1,54 +1,52 @@
-CC=gcc
+# Define KallistiOS environment variable
+KOS_BASE=/opt/toolchains/dc/kos/
+export KOS_BASE
 
+# Use KallistiOS wrapper scripts for compilation
+CC=kos-cc
+CXX=kos-c++
+
+# Include directories and flags
 IDIR+=.
-CFLAGS+=$(addprefix -I,$(IDIR)) -g -Wall -W -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable
+CFLAGS+=$(addprefix -I,$(IDIR)) $(KOS_CFLAGS) -std=c11 -g -Wall -W -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable
 LIBS+=
 
+
+
+# Object and source files
 ODIR = obj
 SRC = $(wildcard *.c)
 OBJ = $(addprefix $(ODIR)/,$(SRC:.c=.o))
 
+# Output filename
 OUTNAME=toy
+OUT=../$(TOY_OUTDIR)/$(OUTNAME).elf
 
-ifeq ($(findstring CYGWIN, $(shell uname)),CYGWIN)
-	LIBLINE=-Wl,-rpath,. -Wl,--out-implib=../$(TOY_OUTDIR)/lib$(OUTNAME).dll.a -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--whole-archive $(OBJ) -Wl,--no-whole-archive
-	OUT=../$(TOY_OUTDIR)/$(OUTNAME).dll
-else ifeq ($(shell uname),Linux)
-	LIBLINE=-Wl,-rpath,. -Wl,--out-implib=../$(TOY_OUTDIR)/lib$(OUTNAME).a -Wl,--whole-archive $(OBJ) -Wl,--no-whole-archive
-	OUT=../$(TOY_OUTDIR)/lib$(OUTNAME).so
-	CFLAGS += -fPIC
-else ifeq ($(OS),Windows_NT)
-	LIBLINE=-Wl,-rpath,. -Wl,--out-implib=../$(TOY_OUTDIR)/lib$(OUTNAME).dll.a -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--whole-archive $(OBJ) -Wl,--no-whole-archive
-	OUT=../$(TOY_OUTDIR)/$(OUTNAME).dll
-else ifeq ($(shell uname),Darwin)
-	LIBLINE = $(OBJ)
-	OUT=../$(TOY_OUTDIR)/lib$(OUTNAME).dylib
-else
-	@echo "Platform test failed - what platform is this?"
-	exit 1
-endif
-
+# Build targets
 library: $(OBJ)
-	$(CC) -DTOY_EXPORT $(CFLAGS) -shared -o $(OUT) $(LIBLINE)
+	$(CC) -DTOY_EXPORT $(CFLAGS) -shared -o $(OUT) $(OBJ) $(LIBS)
 
 static: $(OBJ)
 	ar crs ../$(TOY_OUTDIR)/lib$(OUTNAME).a $(OBJ)
 
 library-release: $(OBJ) library
-	strip $(OUT)
+	kos-strip $(OUT)
 
 static-release: $(OBJ) static
-	strip -d ../$(TOY_OUTDIR)/lib$(OUTNAME).a
+	kos-strip -d ../$(TOY_OUTDIR)/lib$(OUTNAME).a
 
+# Create object directory
 $(OBJ): | $(ODIR)
 
 $(ODIR):
 	mkdir $(ODIR)
 
+# Compile objects
 $(ODIR)/%.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
+# Clean up
 .PHONY: clean
 
 clean:
-	$(RM) $(ODIR)
+	$(RM) -r $(ODIR) ../$(TOY_OUTDIR)/$(OUTNAME).elf ../$(TOY_OUTDIR)/lib$(OUTNAME).a
