@@ -1,25 +1,27 @@
-CC=gcc
+# Define KallistiOS environment variable
+KOS_BASE=/opt/toolchains/dc/kos/
+export KOS_BASE
 
+# Use KallistiOS wrapper scripts for compilation
+CC=kos-cc
+CXX=kos-c++
+
+# Include directories and flags
 IDIR+=. ../source
-CFLAGS+=$(addprefix -I,$(IDIR)) -g -Wall -W -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable
+CFLAGS+=$(addprefix -I,$(IDIR)) $(KOS_CFLAGS) -std=c11 -g -Wall -W -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable
 LIBS+=-ltoy -lm
 
 ODIR = obj
 SRC = $(wildcard *.c)
 OBJ = $(addprefix $(ODIR)/,$(SRC:.c=.o))
 OUTNAME=toy
-OUT=../$(TOY_OUTDIR)/toyrepl
+OUT=../$(TOY_OUTDIR)/toyrepl.elf
 
 all: $(OBJ)
-ifeq ($(shell uname),Darwin)
-	cp $(PWD)/$(TOY_OUTDIR)/lib$(OUTNAME).dylib /usr/local/lib/
-	$(CC) -DTOY_IMPORT $(CFLAGS) -o $(OUT) $(OBJ) $(LIBS)
-else
-	$(CC) -DTOY_IMPORT $(CFLAGS) -o $(OUT) $(OBJ) -Wl,-rpath,. -L$(realpath $(shell pwd)/../$(TOY_OUTDIR)) $(LIBS)
-endif
+	$(CC) -DTOY_IMPORT $(CFLAGS) -o $(OUT) $(OBJ) -L$(realpath $(shell pwd)/../$(TOY_OUTDIR)) $(LIBS)
 
 release: all
-	strip $(OUT)
+	kos-strip $(OUT)
 
 $(OBJ): | $(ODIR)
 
@@ -33,4 +35,5 @@ $(ODIR)/%.o: %.c
 
 clean:
 	$(RM) $(ODIR)
-	rm /usr/local/lib/lib$(OUTNAME).dylib
+	$(RM) ../$(TOY_OUTDIR)/lib$(OUTNAME).a
+	$(RM) $(OUT)
