@@ -1,0 +1,44 @@
+import standard;
+
+fn generateMessage(index) {
+    var messages = [
+    "The Sega Dreamcast!",
+    "Home of Toy",
+    "The Best Programming Language",
+    "On the Sega Dreamcast",
+    "Created by RatStails",
+    "Who excels at Game Development",
+    "Revolutionizing Coding on Consoles",
+    "Where Dreams Become Code",
+    "Toy: Bridging Creativity and Technology",
+    "Innovating One Line at a Time",
+    "Join the Toy Programming Revolution",
+    "Empowering Developers Worldwide",
+    "Code, Create, Conquer with Toy",
+    "Building the Future of Game Dev",
+    "Toy: The Language of Creativity",
+    "Transforming Ideas into Reality"
+];
+
+    return messages[index % messages.length()];
+}
+
+fn delay() {
+    var counter = 0;
+    while (counter < 10000) { // 1000000  32 MB option. lol. 
+        counter++;
+    }
+}
+
+fn main() {
+    print("Welcome to Toy on the Dreamcast a wonderful language now (almost) usable on the best");
+
+    var index = 0;
+    while (true) {
+        delay(); 
+        print(generateMessage(index));
+        index++; 
+    }
+}
+
+main();
