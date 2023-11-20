@@ -5,11 +5,14 @@
 
 # Dreamcast
 Currently a few performances issues with Toy on Dreamcast so this is only just to show that it works but to run a Toy Script
-Go to the test directory 
-source /opt/toolchains/dc/kos/environ.sh
-make and make clean and the .elf file should appear in your project directory. 
+Go to the test directory and open up the command line
+* source /opt/toolchains/dc/kos/environ.sh
+* make
+
+the .elf file should appear in your project directory. 
 The makefiles are set up in a way so if your KOS install is the default one in the default location it should work if not you may need to modify the makefiles.
 
+to modify the toy script go to romdisk/scripts/dreamcst.toy and toy away. 
 
 
 
