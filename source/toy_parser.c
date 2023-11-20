@@ -5,8 +5,14 @@
 #include "toy_opcodes.h"
 
 #include "toy_console_colors.h"
+#include <kos.h>
 
 #include <stdio.h>
+
+
+extern uint8 romdisk[];
+KOS_INIT_ROMDISK(romdisk);
+
 
 //utility functions
 static void error(Toy_Parser* parser, Toy_Token token, const char* message) {
