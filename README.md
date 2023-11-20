@@ -2,6 +2,17 @@
   <image src="toylogo.png" />
 </p>
 
+
+# Dreamcast
+Currently a few performances issues with Toy on Dreamcast so this is only just to show that it works but to run a Toy Script
+Go to the test directory 
+source /opt/toolchains/dc/kos/environ.sh
+make and make clean and the .elf file should appear in your project directory. 
+The makefiles are set up in a way so if your KOS install is the default one in the default location it should work if not you may need to modify the makefiles.
+
+
+
+
 # Toy
 
 The Toy programming language is an imperative bytecode-intermediate embedded scripting language. It isn't intended to operate on its own, but rather as part of another program, the "host". This process is intended to allow a decent amount of easy customisation by the host's end user, by exposing logic in script files. Alternatively, binary files in a custom format can be used as well.
